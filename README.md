@@ -37,9 +37,9 @@ This uploads the photos and creates 8 items with their SGD prices. Brand, size, 
    - `NEXT_PUBLIC_SUPABASE_URL`
    - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
    - `ADMIN_EMAILS`
-   - `NEXT_PUBLIC_SITE_URL`
    - `CRON_SECRET`
 3. Deploy. Every push to `main` redeploys automatically.
+   - Link previews use Vercel's production address automatically. If you add a custom domain later, set `SITE_URL` (e.g. `https://closetcrusade.com`) and redeploy.
 4. The daily cron in `vercel.json` pings Supabase so the free project doesn't pause from inactivity.
 
 ## Adding or removing an admin

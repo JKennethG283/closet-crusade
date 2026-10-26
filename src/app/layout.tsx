@@ -15,9 +15,7 @@ const body = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: process.env.NEXT_PUBLIC_SITE_URL
-    ? new URL(process.env.NEXT_PUBLIC_SITE_URL)
-    : undefined,
+  metadataBase: site.url ? new URL(site.url) : undefined,
   title: { default: `${site.name} — ${site.tagline}`, template: `%s · ${site.name}` },
   description:
     "Curated second-hand fashion: accessible designer pieces and unexpected vintage finds. Browse for your next grail.",
