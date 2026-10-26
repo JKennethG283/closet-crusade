@@ -4,7 +4,7 @@ Catalogue site for Closet Crusade: design-first second-hand fashion. Buyers brow
 
 - **Stack:** Next.js 16 (App Router, Cache Components), Tailwind CSS 4, Supabase (Postgres, Storage, Auth), hosted on Vercel.
 - **Prices:** stored in SGD. Other currencies (IDR, MYR, USD, EUR, GBP, AUD, JPY) are converted using daily ECB rates from [Frankfurter](https://frankfurter.dev), refreshed hourly.
-- **Admin:** `/admin`, "Continue with Google". Only the emails in `ADMIN_EMAILS` **and** `private.admins` (see `supabase/schema.sql`) get in. The database enforces this with Row Level Security.
+- **Admin:** `/admin`, email + password. Accounts are created by hand in Supabase (public sign-up is off). Only the emails in `ADMIN_EMAILS` **and** `private.admins` (see `supabase/schema.sql`) can change anything. The database enforces this with Row Level Security.
 
 ## One-time setup
 
@@ -14,22 +14,14 @@ Catalogue site for Closet Crusade: design-first second-hand fashion. Buyers brow
 2. **SQL Editor → New query**: paste all of [`supabase/schema.sql`](supabase/schema.sql) and click **Run**.
 3. **Project Settings → API Keys**: copy the project URL, the **publishable** key and a **secret** key into `.env.local` (start from `.env.example`).
 4. **Authentication → Sign In / Providers**:
-   - Turn **off** "Allow anonymous sign-ins" (it's off by default).
-   - Turn **off** the **Email** provider, so the only way in is Google.
-   - Turn **on** **Google** (step 2 gives you the Client ID and secret).
-5. **Authentication → URL Configuration**:
-   - **Site URL**: your Vercel URL, e.g. `https://closet-crusade.vercel.app`.
-   - **Redirect URLs**: add `http://localhost:3000/auth/callback` and `https://closet-crusade.vercel.app/auth/callback`.
+   - Turn **off** "Allow new users to sign up", so nobody can create their own account.
+   - Leave "Allow anonymous sign-ins" **off**.
+   - Under the **Email** provider, set the minimum password length to at least 12.
+5. **Authentication → Users → Add user → Create new user**: create one account for each admin email in `ADMIN_EMAILS`, with a strong password and **Auto Confirm User** ticked. Give your sister her password in person or through a password manager.
 
-### 2. Google sign-in
+To reset a forgotten password, open **Authentication → Users**, click the user's **⋯** menu, and set a new password.
 
-1. Open [Google Cloud Console → APIs & Services → Credentials](https://console.cloud.google.com/apis/credentials) and create a project.
-2. Set up the **OAuth consent screen**: External, app name "Closet Crusade", and your email as support contact. Publish it to production. It only asks for basic email/profile access, so Google doesn't need to verify it.
-3. **Create credentials → OAuth client ID → Web application**.
-   - Authorized redirect URI: `https://<your-project-ref>.supabase.co/auth/v1/callback`. Supabase shows this exact URL on its Google provider page.
-4. Paste the Client ID and Client secret into Supabase's Google provider and save.
-
-### 3. Load the first items
+### 2. Load the first items
 
 ```bash
 npm install
@@ -38,7 +30,7 @@ npm run seed -- "drive-download-20261025T234536Z-1-001"
 
 This uploads the photos and creates 8 items with their SGD prices. Brand, size, condition and description are filled in from `/admin`. The hooded floral jacket ("Layer 1/2" photos) gets a placeholder name.
 
-### 4. Vercel
+### 3. Vercel
 
 1. [vercel.com/new](https://vercel.com/new) → import `JKennethG283/closet-crusade`.
 2. Add these environment variables (values from `.env.local`). **Don't** add `SUPABASE_SECRET_KEY`.
@@ -52,7 +44,7 @@ This uploads the photos and creates 8 items with their SGD prices. Brand, size, 
 
 ## Adding or removing an admin
 
-Update **both**:
+Create (or delete) their account under **Authentication → Users**, then update **both**:
 
 - the `ADMIN_EMAILS` environment variable (Vercel, then redeploy), and
 - the database list:
@@ -76,7 +68,7 @@ npm run build
 
 ## Guide for the shop admin
 
-1. Go to **your-site/admin** and tap **Continue with Google**. Choose your Gmail account.
+1. Go to **your-site/admin** and sign in with your email and password. Let your phone save the password so you don't have to type it next time.
 2. **Add an item:** tap **+ Add new item**.
    - Add photos. The first photo is the cover. Use ← → to reorder and ✕ to remove.
    - Fill in the name and the price in SGD. Brand, size, condition and description are optional.

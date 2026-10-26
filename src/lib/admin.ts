@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 
 // Second line of defence next to the database allow-list (private.admins):
 // the app refuses to show admin pages to anyone not listed here.
-export function isAllowedAdminEmail(email: string | null | undefined) {
+function isAllowedAdminEmail(email: string | null | undefined) {
   if (!email) return false;
   const allowed = (process.env.ADMIN_EMAILS ?? "")
     .split(",")

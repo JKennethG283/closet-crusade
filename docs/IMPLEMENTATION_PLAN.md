@@ -10,7 +10,7 @@ A simple catalogue site for second-hand fashion. Buyers browse, then message on 
 | Hosting | Vercel (Hobby/free), connected to `JKennethG283/closet-crusade` | Push to `main` → auto-deploy |
 | Database | Supabase Postgres (free tier) | Stores items, prices, status |
 | Image storage | Supabase Storage (public bucket) + `next/image` | Upload from admin, served resized/optimised |
-| Admin login | Supabase Auth, **Sign in with Google** | Both admins use Gmail; no password or email sender needed; only allow-listed emails |
+| Admin login | Supabase Auth, **email + password** | Accounts created by hand; no email sender or Google setup needed; only allow-listed emails can edit |
 | Exchange rates | Frankfurter API (ECB rates, free, no key) | Covers SGD, IDR, MYR, USD, EUR, GBP, AUD, JPY… |
 
 One service (Supabase) covers database, images and login, so there is only one extra dashboard to manage. Free Supabase projects pause after 7 days without traffic; a daily Vercel Cron ping keeps it awake.
@@ -46,12 +46,12 @@ One service (Supabase) covers database, images and login, so there is only one e
 ## 4. Admin (for a non-technical user)
 
 **Login `/admin`**
-1. Tap "Continue with Google" → pick the Gmail account → logged in.
+1. Enter email and password → logged in. Phones can save the password.
 
-> Changed from email magic links: Supabase's built-in mailer only delivers to Supabase team members, and a real sender (e.g. Resend) needs a custom domain, which is postponed. Google sign-in gives the same email-based allow-list with less friction.
+> Changed from email magic links: Supabase's built-in mailer only delivers to Supabase team members, and a real sender needs a custom domain, which is postponed. Google sign-in was considered and dropped to skip the Google Cloud setup. Forgotten passwords are reset by the owner in the Supabase dashboard.
 
 **Security**
-- Email/password and anonymous sign-in disabled in Supabase; only Google accounts whose email is in `private.admins` (and the `ADMIN_EMAILS` env var) get admin access.
+- Public sign-up and anonymous sign-in disabled in Supabase; admin accounts are created by hand, and only emails in `private.admins` (and the `ADMIN_EMAILS` env var) get admin access.
 - Database Row-Level Security: anyone can *read* published items; only admins can create/edit/delete items and upload/delete photos. Enforced in the database, not just the UI.
 - Next.js middleware blocks `/admin/*` for anyone not logged in; every server action re-checks admin status.
 - Supabase's built-in rate limiting on login emails; secrets only in Vercel env vars, never in the repo.
