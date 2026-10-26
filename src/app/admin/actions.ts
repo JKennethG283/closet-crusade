@@ -129,12 +129,6 @@ export async function deleteItem(id: string): Promise<{ error: string }> {
   redirect("/admin?deleted=1");
 }
 
-export async function signOut() {
-  const supabase = await createClient();
-  await supabase.auth.signOut();
-  redirect("/admin/login");
-}
-
 async function uniqueSlug(supabase: Awaited<ReturnType<typeof createClient>>, base: string) {
   const { data } = await supabase.from("items").select("slug").like("slug", `${base}%`);
   const taken = new Set((data ?? []).map((r) => r.slug));

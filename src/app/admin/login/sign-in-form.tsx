@@ -1,13 +1,12 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/browser";
 
 const NOT_ALLOWED = "This account isn't allowed to manage the shop.";
 
 export function SignInForm() {
-  const router = useRouter();
   const notAllowed = useSearchParams().get("error") === "not_allowed";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -36,8 +35,10 @@ export function SignInForm() {
       return;
     }
 
-    router.replace("/admin");
-    router.refresh();
+    // Full page load: the client router still remembers /admin as "redirect to login"
+    // from before sign-in, so a soft navigation would land back here.
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+    window.location.assign("/admin");
   }
 
   const message = error ?? (notAllowed ? NOT_ALLOWED : null);

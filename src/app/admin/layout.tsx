@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { signOut } from "./actions";
+import { SignOutButton } from "./sign-out-button";
 
 export const metadata: Metadata = {
   title: "Admin",
@@ -19,11 +19,7 @@ export default function AdminLayout({ children }: LayoutProps<"/admin">) {
             <Link href="/" target="_blank" className="text-neutral-600 hover:text-black">
               View shop ↗
             </Link>
-            <form action={signOut}>
-              <button type="submit" className="text-neutral-600 hover:text-black">
-                Sign out
-              </button>
-            </form>
+            <SignOutButton />
           </nav>
         </div>
       </header>
