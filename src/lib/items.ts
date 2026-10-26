@@ -13,7 +13,7 @@ function normalize(item: Item): Item {
 export async function getPublishedItems(): Promise<Item[]> {
   "use cache";
   cacheTag(ITEMS_TAG);
-  cacheLife("hours");
+  cacheLife("minutes");
 
   const { data, error } = await createPublicClient()
     .from("items")
@@ -29,7 +29,7 @@ export async function getPublishedItems(): Promise<Item[]> {
 export async function getPublishedItem(slug: string): Promise<Item | null> {
   "use cache";
   cacheTag(ITEMS_TAG);
-  cacheLife("hours");
+  cacheLife("minutes");
 
   const { data, error } = await createPublicClient()
     .from("items")
